@@ -1,0 +1,142 @@
+/* From the Nerfies template (https://github.com/nerfies/nerfies.github.io), CC BY-SA 4.0,
+   trimmed to the parts this page uses, with MapCast's additions at the end. */
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  background-color: #ffffff;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+}
+
+.footer .icon-link {
+  font-size: 25px;
+  color: #000;
+}
+
+.link-block a {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.dnerf {
+  font-variant: small-caps;
+}
+
+.teaser .hero-body {
+  padding-top: 0;
+  padding-bottom: 3rem;
+}
+
+.teaser {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-title {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-authors {
+  font-family: 'Google Sans', sans-serif;
+}
+
+.publication-venue {
+  color: #555;
+  width: fit-content;
+  font-weight: bold;
+}
+
+.publication-authors a {
+  color: hsl(204, 86%, 53%) !important;
+}
+
+.publication-authors a:hover {
+  text-decoration: underline;
+}
+
+.author-block {
+  display: inline-block;
+}
+
+.publication-video {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 10px !important;
+}
+
+.publication-video video {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #000;
+}
+
+/* MapCast additions */
+
+.teaser-image {
+  display: block;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto 1.25rem;
+}
+
+.paper-figure {
+  margin: 0 0 1.5rem;
+}
+
+.paper-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.paper-figure figcaption {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: #4a4a4a;
+  text-align: left;
+}
+
+.key-numbers .heading {
+  color: #4a4a4a;
+}
+
+.key-numbers .title {
+  font-family: 'Google Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+.key-numbers-note {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #4a4a4a;
+}
+
+.color-key {
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  border-radius: 50%;
+  margin-right: 0.3em;
+  vertical-align: baseline;
+}
+
+.color-key.server { background: #cf2f2f; }
+.color-key.map { background: #1d8f63; }
+.color-key.client { background: #1f62c4; }
+
+.sym {
+  font-family: 'Times New Roman', Times, serif;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+.sym sub {
+  font-style: normal;
+}

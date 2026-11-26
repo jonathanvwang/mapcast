@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="MapCast streams the local map around the camera from a server to the client, so the client localizes every frame in real time with a few megabytes of map.">
+  <meta name="keywords" content="MapCast, visual localization, map streaming, client-server">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MapCast: Spatially Aware Map Streaming for Real-Time Visual Localization</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./static/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">MapCast: Spatially Aware Map Streaming for Real-Time Visual Localization</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Anonymous Authors</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Under double-blind review</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark" disabled>
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- arXiv Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark" disabled>
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="#demo"
+                   class="button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-video"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a class="external-link button is-normal is-rounded is-dark" disabled>
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img class="teaser-image" src="./static/images/teaser.png" width="1600" height="1145"
+           alt="The server holds a global map of a city. A red request dot sits near a fountain, and a green beam carries the local map around it down to the client, where a blue camera trajectory runs through the green local map.">
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">MapCast</span> streams the local map around the camera from the server,
+        so the client localizes every frame on its own with a few megabytes of map.
+      </h2>
+      <p class="has-text-centered is-size-6">
+        <span class="color-key server"></span>Request&nbsp;&nbsp;
+        <span class="color-key map"></span>Local map&nbsp;&nbsp;
+        <span class="color-key client"></span>Client trajectory
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <nav class="level key-numbers">
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Client speed</p>
+            <p class="title">12–26 fps</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Faster than hLoc</p>
+            <p class="title">2.4–4.1×</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Smaller map</p>
+            <p class="title">36–112×</p>
+          </div>
+        </div>
+        <div class="level-item has-text-centered">
+          <div>
+            <p class="heading">Scenes</p>
+            <p class="title">18</p>
+          </div>
+        </div>
+      </nav>
+      <p class="has-text-centered key-numbers-note">
+        Averages per benchmark on 7Scenes, Cambridge Landmarks and Indoor-6, against full-map feature matching with hLoc on the same hardware. No network is trained for any scene.
+      </p>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            For augmented reality and robotics, visual localization estimates a drift-free 6-DoF camera pose
+            from a single frame against a prebuilt map. A client must localize every frame in real time, but
+            accurate methods are too slow, hold the full map, or train a network per scene. Ideally, a client
+            would need nothing but its camera frames.
+          </p>
+          <p>
+            We present <span class="dnerf">MapCast</span>, which streams the map to the client as its camera
+            moves. The server localizes a frame on request and returns the local map around the camera. The
+            client localizes every frame against this map. As the camera's view moves beyond it, the client
+            requests the next map and keeps localizing until it arrives. Built by structure from motion with no
+            per-scene training, the global map stays on the server, which can update or extend it without
+            changing clients.
+          </p>
+          <p>
+            On 18 scenes from three benchmarks, the client averages 12 to 26 frames per second, 2.4 to 4.1 times
+            faster than full-map feature matching with hLoc on the same hardware, holds a 36 to 112 times smaller
+            map, and keeps comparable accuracy under real network latency.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Demo video. -->
+    <div class="columns is-centered has-text-centered" id="demo">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <video controls muted loop playsinline preload="metadata"
+                 poster="./static/videos/demo_poster.jpg" width="1080" height="720">
+            <source src="./static/videos/demo.mp4" type="video/mp4">
+          </video>
+        </div>
+        <p class="content has-text-justified is-size-6" style="margin-top: 0.75rem;">
+          A live run in a home office. A handheld camera is localized frame by frame as it moves. The camera
+          (cyan) and its trajectory are drawn on the map, and its live frame is in the lower left.
+        </p>
+      </div>
+    </div>
+    <!--/ Demo video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- How it works. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">How It Works</h2>
+        <div class="content has-text-justified">
+          <p>
+            A moving camera sees only the part of the map near its pose. <span class="dnerf">MapCast</span>
+            keeps the global map on the server and sends the client only that part, one local map at a time.
+          </p>
+          <ol>
+            <li><b>Localize a request.</b> The client sends one frame. The server localizes it against the
+              global map with image retrieval and feature matching.</li>
+            <li><b>Send the local map.</b> The server returns the points that the database images taken near
+              that pose observe, a few megabytes in all.</li>
+            <li><b>Localize every frame.</b> The client localizes each frame against the local map on its own,
+              so no frame waits for the network.</li>
+            <li><b>Refresh the map.</b> When the share of inlier matches drops below a threshold
+              <span class="sym">ρ<sub>min</sub></span>, the client requests the next map and keeps localizing
+              until it arrives.</li>
+          </ol>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <figure class="paper-figure">
+              <a href="./static/images/overview.png" target="_blank" rel="noopener">
+                <img src="./static/images/overview.png" width="1800" height="1355"
+                     alt="Block diagram. On the server, image retrieval, global localization and map extraction work on the global map. On the client, local localization runs SuperPoint, k-NN matching, BMNet, the Hungarian algorithm and PnP RANSAC against the local map, and map refresh sends a query when the inlier ratio falls below the threshold.">
+              </a>
+              <figcaption><b>(a) Architecture.</b> The server (red) holds the global map (gray) and extracts
+                local maps. The client (blue) localizes every frame against its local map (green).</figcaption>
+            </figure>
+          </div>
+          <div class="column">
+            <figure class="paper-figure">
+              <a href="./static/images/timeline.png" target="_blank" rel="noopener">
+                <img src="./static/images/timeline.png" width="1600" height="1205"
+                     alt="Timeline with one lane per thread. The client localization thread processes a frame in every slot while the server handles a request, and the client map thread swaps in the new map when it arrives.">
+              </a>
+              <figcaption><b>(b) One map refresh</b>, one lane per thread, not to scale. While the server
+                handles a request (red), the client keeps localizing frames (blue) and swaps in the new map
+                when it arrives (green).</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ How it works. -->
+
+    <!-- Local map. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Local Map Extraction</h2>
+        <div class="content has-text-justified">
+          <p>
+            The server finds database images near the estimated pose with a K-D tree, expands them by
+            covisibility, and sends the points that these images observe. The map covers the camera's next
+            views and leaves out what lies behind the walls.
+          </p>
+        </div>
+        <div class="columns">
+          <div class="column">
+            <figure class="paper-figure">
+              <a href="./static/images/localmap_a.png" target="_blank" rel="noopener">
+                <img src="./static/images/localmap_a.png" width="900" height="676"
+                     alt="Top-down view of two corridors meeting at a corner. The request camera in red with four seed images in green next to it.">
+              </a>
+              <figcaption><b>(a) Seeds.</b> Database images within a radius <span class="sym">r</span> of
+                the request (red).</figcaption>
+            </figure>
+          </div>
+          <div class="column">
+            <figure class="paper-figure">
+              <a href="./static/images/localmap_b.png" target="_blank" rel="noopener">
+                <img src="./static/images/localmap_b.png" width="900" height="676"
+                     alt="The same corridors with twenty images selected, the seeds and, in light green, images covisible with them along both corridors.">
+              </a>
+              <figcaption><b>(b) Scene retrieval</b> adds images covisible with the seeds, also beyond
+                <span class="sym">r</span>.</figcaption>
+            </figure>
+          </div>
+          <div class="column">
+            <figure class="paper-figure">
+              <a href="./static/images/localmap_c.png" target="_blank" rel="noopener">
+                <img src="./static/images/localmap_c.png" width="900" height="676"
+                     alt="Green points along both corridors form the local map. The room behind the corridor walls has no green points.">
+              </a>
+              <figcaption><b>(c) Local map.</b> Their points (green) cover both corridors and nothing behind
+                the walls.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Local map. -->
+
+    <!-- Results. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Results</h2>
+
+        <h3 class="title is-4">Speed and accuracy</h3>
+        <div class="content has-text-justified">
+          <p>
+            <span class="dnerf">MapCast</span> localizes a frame in 39 to 84&nbsp;ms with 3 to 8&nbsp;MB of map.
+            DSAC*, ACE and GLACE are faster but train a network for every scene. hLoc is more accurate but holds
+            the full map and takes 158 to 210&nbsp;ms per frame.
+          </p>
+        </div>
+        <figure class="paper-figure" style="max-width: 720px; margin-left: auto; margin-right: auto;">
+          <a href="./static/images/speed.png" target="_blank" rel="noopener">
+            <img src="./static/images/speed.png" width="1600" height="1144"
+                 alt="Scatter plot of recall against latency for eight methods on three benchmarks. MapCast's three small blue points lie at 39 to 84 ms. hLoc lies at 158 to 210 ms with large markers. DeViLoc and MASt3R+Kapture take seconds.">
+          </a>
+          <figcaption><b>Recall against latency</b> on a laptop. The upper left is best. Recall is at 5&nbsp;cm
+            and 5° on 7Scenes and Indoor-6, and at 25&nbsp;cm and 2° on Cambridge Landmarks. Marker area grows
+            with the stored map, and hollow markers are methods trained per scene.</figcaption>
+        </figure>
+
+        <h3 class="title is-4">Under real network latency</h3>
+        <div class="content has-text-justified">
+          <p>
+            The client never stops to wait for a map, so a slow network shows up as an older local map rather
+            than a missing pose. Over campus Wi-Fi, the error stays close to that of an ideal client that waits
+            for every map. With extra round-trip time added by netem, the median translation error rises by at
+            most 2.1&nbsp;cm up to 300&nbsp;ms. At 600&nbsp;ms the error grows, the least for larger local maps.
+          </p>
+        </div>
+        <figure class="paper-figure">
+          <a href="./static/images/network.png" target="_blank" rel="noopener">
+            <img src="./static/images/network.png" width="2400" height="892"
+                 alt="Six line charts of median rotation and translation error against local map size for 7Scenes, Cambridge Landmarks and Indoor-6. Real nearly overlaps Ideal, and the error grows with the round-trip time.">
+          </a>
+          <figcaption><b>Error under different networks.</b> Median rotation (top) and translation (bottom) error
+            against local map size, averaged over the scenes of each benchmark. Ideal (dashed) waits for every
+            map, Real (orange) runs on campus Wi-Fi, and the blue lines add 150, 300 and 600&nbsp;ms of
+            round-trip time. Bands are 95% confidence intervals over 10 runs.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <!--/ Results. -->
+
+    <!-- Campus walk. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Local Maps on a Campus Walk</h2>
+        <div class="content has-text-justified">
+          <p>
+            A phone walk around a campus building. Each request receives only the part of the map around the
+            camera, 4,284 to 9,004 points at the four positions below.
+          </p>
+        </div>
+        <figure class="paper-figure">
+          <a href="./static/images/eewalk.png" target="_blank" rel="noopener">
+            <img src="./static/images/eewalk.png" width="2400" height="810"
+                 alt="Top-down view of a campus point cloud in gray with the walk in black. Four cameras A to D in magenta, orange, aqua and purple each with its local map in the same color, and photos of what each camera sees with 5,243, 4,866, 4,284 and 9,004 points.">
+          </a>
+          <figcaption><b>Seen from above</b>, the global map in gray and the walk in black. <b>(A–D)</b> The
+            local map that a request at each position receives, with the camera and its frame in the same color.
+            The scale bar is approximate.</figcaption>
+        </figure>
+      </div>
+    </div>
+    <!--/ Campus walk. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@inproceedings{mapcast2027,
+  title     = {MapCast: Spatially Aware Map Streaming for Real-Time Visual Localization},
+  author    = {Anonymous},
+  note      = {Under review},
+  year      = {2027},
+}</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            It is adapted from the <a href="https://github.com/nerfies/nerfies.github.io">source code</a> of the
+            <a href="https://nerfies.github.io">Nerfies</a> website.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
